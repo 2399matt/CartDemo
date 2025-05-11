@@ -1,0 +1,12 @@
+<div th:fragment="orderPage">
+    <h3 style="display:block; margin: auto; width: 10%;" th:text="'Order: #'+${order.id}"></h3>
+    <ul id="orderList" class="list-group">
+        <li class="list-group-item" th:each="product : ${order.items}">
+            <p th:text="${product.name}"></p>
+            <span th:text="'$'+${product.price}"></span>
+        </li>
+        <strong th:text="'Total: $'+${order.total}"></strong>
+    </ul>
+
+    <a style="display:block; margin: auto; width: 30%;" th:href="@{/home}">Back to home</a>
+</div>

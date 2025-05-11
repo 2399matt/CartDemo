@@ -1,0 +1,14 @@
+<div th:fragment="Thanks">
+
+  <h2 th:text="'Thank you for shopping! Your order confirmation is: '+${order.id}"></h2>
+  <ul>
+  <li th:each="product : ${order.items}">
+    <p th:text="${product.name}"></p>
+    <span th:text="'$'+${product.price}"></span>
+  </li>
+  </ul>
+  <strong>Total:</strong><p th:text="${order.total}"></p>
+
+  <a th:href="@{/home}">Back to home</a>
+
+</div>

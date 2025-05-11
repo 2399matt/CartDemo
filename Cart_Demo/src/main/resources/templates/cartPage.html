@@ -1,0 +1,28 @@
+<div th:fragment="cartPage">
+
+    <table class="table table-sm table-hover table-striped" >
+        <thead class="table-dark">
+        <tr>
+            <th>Product Image</th>
+            <th>Product name</th>
+            <th>Price</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cart.items}">
+            <td><img src="/stockphotof.webp" alt="Product photo" class="movie-poster"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.price}"></td>
+            <td><button class="btn btn-warning" hx:get="@{/remove-item(id=${item.id})}" hx-target="#productList" hx-swap="innerHTML">Remove</button></td>
+        </tr>
+        </tbody>
+    </table>
+    <strong style="margin-left:2300px;" th:text="'Total: $'+${total}"></strong>
+
+    <form method="POST" th:action="@{/checkout}">
+        <button type="submit" class="btn btn-success">Checkout</button>
+    </form>
+
+
+</div>

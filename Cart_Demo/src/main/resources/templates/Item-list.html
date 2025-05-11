@@ -1,0 +1,28 @@
+<div th:fragment="itemList">
+    <div th:if="${items.size()==0}" style="color:red; font-size:14px;">No products found!</div>
+    <div class="row g-4">
+        <div th:if="${error}" th:text="${error}" style="color:red; font-size:18px;"></div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" style="width: 15%;" th:each="item : ${items}">
+            <div class="card h-100 shadow-sm">
+                <img src="/stockphotof.webp" class="card-img-top" alt="Movie Poster" />
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${item.name}"></h5>
+                    <p class="card-text">
+                        <strong>Price:</strong> <span th:text="'$'+${item.price}"></span><br>
+                        <strong>Stock:</strong> <span style="color:red;" th:text="${item.stock}+' left!'"></span>
+                    </p>
+                </div>
+               <div class="card-footer text-center">
+                    <button id="checkoutBtn" th:hx-get="@{/add-item(id=${item.id})}"
+                            hx-target="#productList"
+                            hx-swap="innerHTML"
+                            hx-on:click="showModal()"
+                            class="btn btn-dark btn-sm btn-custom" type="button">Add To Cart</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
