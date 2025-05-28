@@ -24,6 +24,7 @@ public class ItemDAO {
                 .getResultList();
     }
 
+    //TODO Pattern match it instead.
     public Item findByName(String name) {
         List<Item> item = entityManager.createQuery("SELECT i FROM Item i WHERE i.name=:name", Item.class)
                 .setParameter("name", name)

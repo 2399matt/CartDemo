@@ -15,9 +15,9 @@ public class CartDAO {
         this.entityManager = entityManager;
     }
 
-    public Cart findUserCart(String username) {
-        return entityManager.createQuery("SELECT c FROM Cart c LEFT JOIN FETCH c.items LEFT JOIN FETCH c.user WHERE c.user.username=:username", Cart.class)
-                .setParameter("username", username)
+    public Cart findUserCart(int id) {
+        return entityManager.createQuery("SELECT c FROM Cart c LEFT JOIN FETCH c.items WHERE c.user.id=:id", Cart.class)
+                .setParameter("id", id)
                 .getSingleResult();
     }
 

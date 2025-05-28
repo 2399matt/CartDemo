@@ -21,8 +21,8 @@ public class CartService {
         this.cartItemService = cartItemService;
     }
 
-    public Cart findUserCart(String username) {
-        return cartDAO.findUserCart(username);
+    public Cart findUserCart(int id) {
+        return cartDAO.findUserCart(id);
     }
 
     @Transactional

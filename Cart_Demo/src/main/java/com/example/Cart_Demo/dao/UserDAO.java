@@ -2,7 +2,7 @@ package com.example.Cart_Demo.dao;
 
 import com.example.Cart_Demo.entity.CustomUser;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -29,12 +29,16 @@ public class UserDAO {
     }
 
     public CustomUser findByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
-                .setParameter("username", username)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new RuntimeException("No user found with username: " + username);
+        }
     }
 
-    public boolean userNameCheck(String username){
+    public boolean userNameCheck(String username) {
         long exists = entityManager.createQuery("SELECT COUNT(c) FROM CustomUser c WHERE c.username=:username", Long.class)
                 .setParameter("username", username)
                 .getSingleResult();

@@ -1,6 +1,6 @@
 package com.example.Cart_Demo.controller;
 
-import com.example.Cart_Demo.entity.WebUser;
+import com.example.Cart_Demo.entity.CustomUser;
 import com.example.Cart_Demo.service.RegistrationService;
 import com.example.Cart_Demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class RegistrationController {
 
     @GetMapping("/new")
     public String regForm(Model model) {
-        model.addAttribute("user", new WebUser());
+        model.addAttribute("user", new CustomUser());
         return "reg-form";
     }
 
@@ -33,17 +33,17 @@ public class RegistrationController {
     }
 
     @PostMapping("/addUser")
-    public String addUser(@ModelAttribute WebUser webUser, @RequestParam("passCheck") String passCheck, Model model) {
-        if(!userService.userNameCheck(webUser.getUsername())) {
+    public String addUser(@ModelAttribute CustomUser user, @RequestParam("passCheck") String passCheck, Model model) {
+        if(!userService.userNameCheck(user.getUsername())) {
             model.addAttribute("userError", "Username is already in use!");
             return "reg-form";
         }
-        else if(!passCheck.equals(webUser.getPassword())) {
+        else if(!passCheck.equals(user.getPassword())) {
             model.addAttribute("passError", "Passwords do not match.");
             return "reg-form";
         }
         else{
-            registrationService.addUser(webUser);
+            registrationService.addUser(user);
             return "login-form";
         }
     }

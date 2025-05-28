@@ -8,7 +8,7 @@ public class GlobalExceptionHandler {
 
     //blanket exceptions
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception ex){
+    public String handleException(){
         return "error";
     }
 }

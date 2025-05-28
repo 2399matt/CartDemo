@@ -1,8 +1,10 @@
 package com.example.Cart_Demo.controller;
 
 import com.example.Cart_Demo.entity.*;
+import com.example.Cart_Demo.security.MyUserDetails;
 import com.example.Cart_Demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +15,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//TODO TRY CUSTOM SPRING SECURITY IMPLEMENTATION, REMOVING THE NEED FOR A CUSTOMUSER OBJECT ALTOGETHER.
 @Controller
 public class EcomController {
 
@@ -58,8 +60,9 @@ public class EcomController {
 
     //cart
     @GetMapping("/add-item")
-    public String addToCart(@RequestParam("id") int id, Principal principal, Model model) {
-        Cart currCart = cartService.findUserCart(principal.getName());
+    public String addToCart(@RequestParam("id") int id, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        CustomUser user = userDetails.getUser();
+        Cart currCart = cartService.findUserCart(user.getId());
         Item item = itemService.findById(id);
         List<Item> items = itemService.findAll();
         if (item.getStock() == 0) {
@@ -75,11 +78,10 @@ public class EcomController {
 
     //cart
     @GetMapping("/show-cart")
-    public String showCart(Cart cart, Principal principal, Model model) {
+    public String showCart(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
         int total = 0;
-        if(cart == null){
-            cart = cartService.findUserCart(principal.getName());
-        }
+        CustomUser user = userDetails.getUser();
+        Cart cart = cartService.findUserCart(user.getId());
         for (CartItem cartItem : cart.getItems()) {
             total += cartItem.getPrice();
         }
@@ -90,16 +92,23 @@ public class EcomController {
 
     //cart
     @GetMapping("/remove-item")
-    public String removeItem(@RequestParam("id") int id, Model model, Principal principal) {
-        Cart cart = cartService.findUserCart(principal.getName());
+    public String removeItem(@RequestParam("id") int id, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
+        int total = 0;
+        CustomUser user = userDetails.getUser();
+        Cart cart = cartService.findUserCart(user.getId());
         cartService.removeItemFromCart(cart, id);
-        return showCart(cart, principal, model);
+        for(CartItem cartItem : cart.getItems()){
+            total += cartItem.getPrice();
+        }
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", total);
+        return "cartPage :: cartPage";
     }
 
     //orders
     @GetMapping("/orders")
-    public String userOrderList(Principal principal, Model model) {
-        CustomUser user = userService.findByUsername(principal.getName());
+    public String userOrderList(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        CustomUser user = userDetails.getUser();
         List<Order> orders = orderService.findUserOrders(user.getId());
         model.addAttribute("orders", orders);
         return "order-list :: orderList";
@@ -115,8 +124,9 @@ public class EcomController {
 
     //orders + cart
     @PostMapping("/checkout")
-    public String checkout(Model model, Principal principal) {
-        Cart cart = cartService.findUserCart(principal.getName());
+    public String checkout(Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
+        CustomUser user = userDetails.getUser();
+        Cart cart = cartService.findUserCart(user.getId());
         Order newOrder = orderService.createNewOrder(cart);
         model.addAttribute("order", newOrder);
         //Simulating checkout, no payment integration.

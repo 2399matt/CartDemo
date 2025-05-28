@@ -1,11 +1,12 @@
 package com.example.Cart_Demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
-@Table(name = "customuser")
+@Table(name = "users")
 public class CustomUser {
 
     @Id
@@ -15,6 +16,13 @@ public class CustomUser {
 
     @Column(name = "username")
     private String username;
+
+    @JsonIgnore
+    @Column(name="password")
+    private String password;
+
+    @Column(name="enabled", columnDefinition = "boolean default true")
+    private boolean enabled;
 
     @OneToOne(mappedBy = "user")
     private Cart cart;
@@ -64,5 +72,21 @@ public class CustomUser {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

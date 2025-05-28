@@ -60,4 +60,11 @@ public class Cart {
     public void removeItem(CartItem item) {
         items.remove(item);
     }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                '}';
+    }
 }
